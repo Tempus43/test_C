@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 using std::cout, std::string, std::cin;
 
 class Employee{
@@ -44,12 +45,35 @@ void saveToFile(const Employee employees[], int size, const string& filename){
     else cout << "Error! File isn't exist!\n";
     outfile.close();
 }
+
+Employee findEmployeeWithHighestSalary(const string& filename){
+    std::fstream file(filename);
+    string line;
+    string name;
+    int id;
+    double salary = -1;
+    while (getline(file, line)){
+        std::istringstream iss(line);
+        string name_;
+        int id_;
+        double salary_;
+        iss >> id_ >> name_ >> salary_;
+        if (salary_ > salary){
+            name = name_;
+            id = id_;
+            salary = salary_;
+        }
+        cout << line << "\n";
+    }
+    return Employee(name, id, salary);
+}
 int main(){
     // Basic level
-
+    
     {
     Employee employees[5];
     for (int i = 0; i < 3; i++){
+        cin.clear();
         cout << "Input " << i + 1 << " employee data.\n";
         string name;
         int id;
@@ -97,5 +121,10 @@ int main(){
             cout << "Salary " << name << ": " << salary << '\n';
         }
     }
+    
+    Employee bestEmployee = findEmployeeWithHighestSalary("employees.txt");
+    cout << bestEmployee.getName() << ' '
+    << bestEmployee.getId() << ' '
+    << bestEmployee.getSalary() << '\n';
     return 0;
 }
